@@ -14,12 +14,12 @@
     <button v-on:click="addTask">追加</button>
     <ul>
       <h1>Todo</h1>
-      <li v-for="todo in filteredTodos(false)">
+      <li v-for="todo in filteredTodos(false)" :key="todo.id">
         <span :class="{done: todo.isDone}">{{ todo.task }}</span>
         <input type="checkbox" v-model="todo.isDone">
       </li>
       <h1>完了</h1>
-      <li v-for="todo in filteredTodos(true)">
+      <li v-for="todo in filteredTodos(true)" :key="todo.id">
         <span :class="{done: todo.isDone}">{{ todo.task }}</span>
       </li>
     </ul>
@@ -45,6 +45,7 @@
           }
 
           const todo = {
+            id: this.todos.length,
             task: this.newTask,
             isDone: false
           };
