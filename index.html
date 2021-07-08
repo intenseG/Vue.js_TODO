@@ -13,32 +13,45 @@
     <input type="text" v-model="newTask">
     <button v-on:click="addTask">追加</button>
     <ul>
-      <h1>Todo</h1>
-      <active-todo
+      <template>
+        <h1>Todo</h1>
+        <active-todo
         v-for="todo in filteredTodos(false)"
         v-bind:todo="todo"
         v-bind:key="todo.id">
-          <span :class="{done: todo.isDone}">{{ todo.task }}</span>
-          <input type="checkbox" v-model="todo.isDone">
-      </active-todo>
-      <h1>完了</h1>
-      <done-todo
+        </active-todo>
+      </template>
+      <template>
+        <h1>完了</h1>
+        <done-todo
         v-for="todo in filteredTodos(true)"
         v-bind:todo="todo"
         v-bind:key="todo.id">
-          <span :class="{done: todo.isDone}">{{ todo.task }}</span>
-      </done-todo>
+        </done-todo>
+      </template>
     </ul>
   </form>
   </div>
   <script>
     Vue.component("active-todo", {
       props: ["todo"],
-      template: '<li>{{ todo.task }}</li>'
+      template: `
+        <div>
+          <li>
+              <span :class="{done: todo.isDone}">{{ todo.task }}</span>
+              <input type="checkbox" v-model="todo.isDone">
+          </li>
+        </div>
+      `
     });
     Vue.component("done-todo", {
       props: ["todo"],
-      template: '<li>{{ todo.task }}</li>'
+      template: `
+        <div>
+          <li>
+            <span :class="{done: todo.isDone}">{{ todo.task }}</span>
+          </li>
+        </div>      `
     });
 
     var app = new Vue({
