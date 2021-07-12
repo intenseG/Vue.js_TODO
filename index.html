@@ -7,5 +7,97 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 </head>
 <body>
+  <div id="app">
+  {{ errorMsg }}
+  <form v-on:submit.prevent>
+    <input type="text" v-model="newTask">
+    <button v-on:click="addTask">追加</button>
+    <template>
+      <h1>Todo</h1>
+      <active-todo
+      v-for="todo in activeTodos"
+      v-bind:todo="todo"
+      v-bind:key="todo.id">
+      </active-todo>
+    </template>
+    <template>
+      <h1>完了</h1>
+      <done-todo
+      v-for="todo in doneTodos"
+      v-bind:todo="todo"
+      v-bind:key="todo.id">
+      </done-todo>
+    </template>
+  </form>
+  </div>
+  <script>
+    Vue.component("active-todo", {
+      props: ["todo"],
+      template: `
+        <div>
+          <ul>
+            <li>
+                <span>{{ todo.task }}</span>
+                <input type="checkbox" v-model="todo.isDone">
+            </li>
+          </ul>
+        </div>
+      `
+    });
+    Vue.component("done-todo", {
+      props: ["todo"],
+      template: `
+        <div>
+          <ul>
+            <li>
+              <span :class="{done: todo.isDone}">{{ todo.task }}</span>
+            </li>
+          </ul>
+        </div>
+      `
+    });
+
+    var app = new Vue({
+      el: "#app",
+      data: {
+        newTask: "",
+        todos: [],
+        errorMsg: ""
+      },
+      methods: {
+        addTask:function(event) {
+          if (this.newTask == "") {
+            this.errorMsg = "Todoは1文字以上で入力してください。";
+            return;
+          }
+          if (this.newTask.length > 10) {
+            this.errorMsg = "Todoは10文字以下で入力してください。";
+            return;
+          }
+
+          const todo = {
+            id: this.todos.length,
+            task: this.newTask,
+            isDone: false
+          };
+          this.todos.push(todo);
+          this.newTask = "";
+          this.errorMsg = "";
+        }
+      },
+      computed: {
+        activeTodos: function() {
+          return this.todos.filter((todo) => {
+            return !todo.isDone;
+          });
+        },
+        doneTodos: function() {
+          return this.todos.filter((todo) => {
+            return todo.isDone;
+          });
+        }
+      }
+    })
+  </script>
 </body>
 </html>
