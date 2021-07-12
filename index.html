@@ -12,24 +12,22 @@
   <form v-on:submit.prevent>
     <input type="text" v-model="newTask">
     <button v-on:click="addTask">追加</button>
-    <ul>
-      <template>
-        <h1>Todo</h1>
-        <active-todo
-        v-for="todo in filteredTodos(false)"
-        v-bind:todo="todo"
-        v-bind:key="todo.id">
-        </active-todo>
-      </template>
-      <template>
-        <h1>完了</h1>
-        <done-todo
-        v-for="todo in filteredTodos(true)"
-        v-bind:todo="todo"
-        v-bind:key="todo.id">
-        </done-todo>
-      </template>
-    </ul>
+    <template>
+      <h1>Todo</h1>
+      <active-todo
+      v-for="todo in activeTodos"
+      v-bind:todo="todo"
+      v-bind:key="todo.id">
+      </active-todo>
+    </template>
+    <template>
+      <h1>完了</h1>
+      <done-todo
+      v-for="todo in doneTodos"
+      v-bind:todo="todo"
+      v-bind:key="todo.id">
+      </done-todo>
+    </template>
   </form>
   </div>
   <script>
@@ -37,10 +35,12 @@
       props: ["todo"],
       template: `
         <div>
-          <li>
-              <span :class="{done: todo.isDone}">{{ todo.task }}</span>
-              <input type="checkbox" v-model="todo.isDone">
-          </li>
+          <ul>
+            <li>
+                <span>{{ todo.task }}</span>
+                <input type="checkbox" v-model="todo.isDone">
+            </li>
+          </ul>
         </div>
       `
     });
@@ -48,10 +48,13 @@
       props: ["todo"],
       template: `
         <div>
-          <li>
-            <span :class="{done: todo.isDone}">{{ todo.task }}</span>
-          </li>
-        </div>      `
+          <ul>
+            <li>
+              <span :class="{done: todo.isDone}">{{ todo.task }}</span>
+            </li>
+          </ul>
+        </div>
+      `
     });
 
     var app = new Vue({
@@ -83,18 +86,15 @@
         }
       },
       computed: {
-        filteredTodos: function() {
-          return function(isDone) {
-            if (isDone) {
-              return this.todos.filter((todo) => {
-                return todo.isDone;
-              });
-            } else {
-              return this.todos.filter((todo) => {
-                return !todo.isDone;
-              });
-            }
-          }
+        activeTodos: function() {
+          return this.todos.filter((todo) => {
+            return !todo.isDone;
+          });
+        },
+        doneTodos: function() {
+          return this.todos.filter((todo) => {
+            return todo.isDone;
+          });
         }
       }
     })
